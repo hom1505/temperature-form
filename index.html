@@ -5,100 +5,84 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>冷鏈溫度巡檢表</title>
 <style>
-  * { box-sizing:border-box; margin:0; padding:0; }
-  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:#f0f4f8; min-height:100vh; padding-bottom:40px; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:#f0f4f8; min-height:100vh; padding-bottom:40px; }
 
-  /* 語言選擇頁 */
-  #lang-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:24px; background:linear-gradient(160deg,#1a5276,#2980b9); }
-  #lang-screen h1 { color:white; font-size:22px; text-align:center; margin-bottom:8px; }
-  #lang-screen p  { color:rgba(255,255,255,0.8); font-size:14px; text-align:center; margin-bottom:32px; }
-  .lang-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; width:
-    timeLabel:'เวลา (อัตโนมัติ)',100%; max-width:360px; }
-  .lang-btn { padding:18px 12px; background:white; border:none; border-radius:14px; cursor:pointer; text-align:center; box-shadow:0 4px 14px rgba(0,0,0,0.15); transition:transform 0.1s; }
-  .lang-btn:active { transform:scale(0.97); }
-  .lang-flag { font-size:30px; display:block; margin-bottom:6px; }
-  .lang-name { font-size:15px; font-weight:700; color:#1a5276; display:block; }
-  .lang-native { font-size:12px; color:#888; display:block; margin-top:2px; }
-  .lang-btn.full { grid-column:1/-1; }
+#lang-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:24px; background:linear-gradient(160deg,#1a5276,#2980b9); }
+#lang-screen h1 { color:white; font-size:22px; text-align:center; margin-bottom:8px; }
+#lang-screen p { color:rgba(255,255,255,0.8); font-size:14px; text-align:center; margin-bottom:32px; }
+.lang-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; width:100%; max-width:360px; }
+.lang-btn { padding:18px 12px; background:white; border:none; border-radius:14px; cursor:pointer; text-align:center; box-shadow:0 4px 14px rgba(0,0,0,0.15); }
+.lang-flag { font-size:30px; display:block; margin-bottom:6px; }
+.lang-name { font-size:15px; font-weight:700; color:#1a5276; display:block; }
+.lang-native { font-size:12px; color:#888; display:block; margin-top:2px; }
+.lang-btn.full { grid-column:1/-1; }
 
-  /* 主畫面 */
-  #main-screen { display:none; }
-  .header { background:linear-gradient(135deg,#1a5276,#2980b9); color:white; padding:20px 16px 16px; text-align:center; position:relative; }
-  .header h1 { font-size:19px; font-weight:700; }
-  .header p  { font-size:13px; opacity:0.85; margin-top:4px; }
-  .lang-switch { position:absolute; top:14px; right:14px; background:rgba(255,255,255,0.2); color:white; border:1.5px solid rgba(255,255,255,0.5); border-radius:8px; padding:5px 10px; font-size:13px; cursor:pointer; }
+#main-screen { display:none; }
+.header { background:linear-gradient(135deg,#1a5276,#2980b9); color:white; padding:20px 16px 16px; text-align:center; position:relative; }
+.header h1 { font-size:19px; font-weight:700; }
+.header p { font-size:13px; opacity:0.85; margin-top:4px; }
+.lang-switch { position:absolute; top:14px; right:14px; background:rgba(255,255,255,0.2); color:white; border:1.5px solid rgba(255,255,255,0.5); border-radius:8px; padding:5px 10px; font-size:13px; cursor:pointer; }
 
-  .card { background:white; margin:16px; border-radius:14px; padding:20px; box-shadow:0 2px 12px rgba(0,0,0,0.08); }
-  .card h2 { font-size:15px; color:#1a5276; border-left:4px solid #2980b9; padding-left:10px; margin-bottom:16px; }
-  .field { margin-bottom:16px; }
-  .field label { display:block; font-size:13px; color:#555; margin-bottom:6px; font-weight:600; }
-  .req { color:#e74c3c; margin-left:2px; }
-  input[type=text],input[type=number],input[type=date],textarea {
-    width:100%; padding:12px 14px; border:1.5px solid #dce3ea; border-radius:10px;
-    font-size:16px; color:#222; background:#fafbfc; appearance:none; -webkit-appearance:none;
-  }
-  input:focus,textarea:focus { outline:none; border-color:#2980b9; background:white; }
+.card { background:white; margin:16px; border-radius:14px; padding:20px; box-shadow:0 2px 12px rgba(0,0,0,0.08); }
+.card h2 { font-size:15px; color:#1a5276; border-left:4px solid #2980b9; padding-left:10px; margin-bottom:16px; }
+.field { margin-bottom:16px; }
+.field label { display:block; font-size:13px; color:#555; margin-bottom:6px; font-weight:600; }
+input[type=text],input[type=number],input[type=date],textarea {
+  width:100%; padding:12px 14px; border:1.5px solid #dce3ea; border-radius:10px;
+  font-size:16px; color:#222; background:#fafbfc; -webkit-appearance:none;
+}
+input:focus,textarea:focus { outline:none; border-color:#2980b9; background:white; }
 
-  .time-btns { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .time-btn { padding:14px; border:2px solid #dce3ea; border-radius:10px; background:white; font-size:14px; cursor:pointer; text-align:center; color:#444; }
-  .time-btn.active { border-color:#2980b9; background:#eaf4fb; color:#1a5276; font-weight:700; }
+.device-list { display:flex; flex-direction:column; gap:12px; }
+.device-item { display:flex; align-items:flex-start; gap:12px; padding:14px; border:2px solid #dce3ea; border-radius:12px; background:#fafbfc; }
+.device-item.selected { border-color:#2980b9; background:#eaf4fb; }
+.device-icon { font-size:24px; padding-top:2px; }
+.device-info { flex:1; }
+.device-name { font-size:15px; font-weight:600; color:#222; }
+.device-type { font-size:12px; color:#888; margin-top:2px; }
+.photo-btn { margin-top:8px; padding:7px 14px; background:#eaf4fb; color:#2980b9; border:1.5px solid #2980b9; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; }
+.device-right { display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+.temp-row { display:flex; align-items:center; gap:4px; }
+.temp-row input { width:72px; padding:8px 10px; font-size:16px; text-align:center; border:1.5px solid #dce3ea; border-radius:8px; background:white; }
+.thumb-img { width:52px; height:52px; object-fit:cover; border-radius:8px; border:2px solid #2980b9; display:none; }
 
-  .device-list { display:flex; flex-direction:column; gap:12px; }
-  .device-item { display:flex; align-items:flex-start; gap:12px; padding:14px; border:2px solid #dce3ea; border-radius:12px; background:#fafbfc; }
-  .device-item.selected { border-color:#2980b9; background:#eaf4fb; }
-  .device-icon { font-size:24px; padding-top:2px; }
-  .device-info { flex:1; }
-  .device-name { font-size:15px; font-weight:600; color:#222; }
-  .device-type { font-size:12px; color:#888; margin-top:2px; }
-  .photo-btn { margin-top:8px; padding:7px 14px; background:#eaf4fb; color:#2980b9; border:1.5px solid #2980b9; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; }
-  .device-right { display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
-  .temp-row { display:flex; align-items:center; gap:4px; }
-  .temp-row input { width:72px; padding:8px 10px; font-size:16px; text-align:center; border:1.5px solid #dce3ea; border-radius:8px; background:white; }
-  .thumb-img { width:52px; height:52px; object-fit:cover; border-radius:8px; border:2px solid #2980b9; display:none; }
+.submit-btn { display:block; width:calc(100% - 32px); margin:0 16px; padding:16px; background:linear-gradient(135deg,#1a5276,#2980b9); color:white; border:none; border-radius:14px; font-size:17px; font-weight:700; cursor:pointer; }
 
-  .submit-btn { display:block; width:calc(100% - 32px); margin:0 16px; padding:16px; background:linear-gradient(135deg,#1a5276,#2980b9); color:white; border:none; border-radius:14px; font-size:17px; font-weight:700; cursor:pointer; box-shadow:0 4px 15px rgba(41,128,185,0.35); }
+#ai-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.78); z-index:999; align-items:center; justify-content:center; }
+.ai-box { background:white; border-radius:18px; padding:24px 20px; margin:20px; width:100%; max-width:420px; text-align:center; }
+#ai-preview { max-width:100%; max-height:200px; border-radius:10px; display:none; margin-bottom:12px; }
+#ai-status { font-size:15px; color:#555; margin-bottom:14px; line-height:1.5; }
+.ai-result-box { background:#eaf4fb; border-radius:10px; padding:14px; margin-bottom:14px; display:none; }
+#ai-temp-display { font-size:36px; font-weight:700; color:#1a5276; margin:6px 0; }
+#ai-temp-input { width:110px; padding:8px; font-size:18px; text-align:center; border:2px solid #2980b9; border-radius:8px; }
+.ai-btns { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:8px; }
+.ai-btn { padding:11px 18px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; border:none; }
 
-  /* AI浮層 */
-  #ai-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.78); z-index:999; align-items:center; justify-content:center; }
-  .ai-box { background:white; border-radius:18px; padding:24px 20px; margin:20px; width:100%; max-width:420px; text-align:center; }
-  #ai-preview { max-width:100%; max-height:200px; border-radius:10px; display:none; margin-bottom:12px; }
-  #ai-status { font-size:15px; color:#555; margin-bottom:14px; line-height:1.5; }
-  .ai-result-box { background:#eaf4fb; border-radius:10px; padding:14px; margin-bottom:14px; display:none; }
-  #ai-temp-display { font-size:36px; font-weight:700; color:#1a5276; margin:6px 0; }
-  #ai-temp-input { width:110px; padding:8px; font-size:18px; text-align:center; border:2px solid #2980b9; border-radius:8px; }
-  .ai-btns { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:8px; }
-  .ai-btn { padding:11px 18px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; border:none; }
-  .ai-btn.blue { background:#2980b9; color:white; }
-  .ai-btn.gray2 { background:#7f8c8d; color:white; }
-  .ai-btn.green { background:#27ae60; color:white; display:none; }
-  .ai-btn.gray  { background:#ecf0f1; color:#555; }
-
-  /* 結果 */
-  #result-screen { display:none; padding:16px; }
-  .result-card { border-radius:14px; padding:22px 18px; margin-bottom:14px; box-shadow:0 2px 12px rgba(0,0,0,0.09); }
-  .result-card.normal   { background:#eafaf1; border:2px solid #27ae60; }
-  .result-card.abnormal { background:#fdedec; border:2px solid #e74c3c; }
-  .result-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
-  .result-icon { font-size:30px; }
-  .result-title { font-size:17px; font-weight:700; }
-  .result-card.normal   .result-title { color:#1e8449; }
-  .result-card.abnormal .result-title { color:#c0392b; }
-  .result-detail { background:white; border-radius:10px; overflow:hidden; margin-top:10px; }
-  .result-row { display:flex; padding:10px 14px; font-size:14px; border-bottom:1px solid #f0f0f0; align-items:center; }
-  .result-row:last-child { border-bottom:none; }
-  .result-label { color:#888; width:90px; flex-shrink:0; font-size:13px; }
-  .result-value { color:#222; font-weight:600; }
-  .result-value.bad { color:#e74c3c; font-size:16px; }
-  .alert-box { background:#fef9e7; border:1.5px solid #f39c12; border-radius:10px; padding:12px 14px; margin-top:10px; font-size:13px; color:#7d6608; line-height:1.6; }
-  .again-btn { display:block; width:100%; padding:14px; background:white; color:#2980b9; border:2px solid #2980b9; border-radius:14px; font-size:16px; font-weight:700; cursor:pointer; margin-top:14px; text-align:center; }
-  .timestamp { text-align:center; font-size:12px; color:#aaa; margin-top:8px; }
-  .spinner { display:inline-block; width:16px; height:16px; border:3px solid #ccc; border-top-color:#2980b9; border-radius:50%; animation:spin 0.8s linear infinite; vertical-align:middle; margin-right:6px; }
-  @keyframes spin { to { transform:rotate(360deg); } }
+#result-screen { display:none; padding:16px; }
+.result-card { border-radius:14px; padding:22px 18px; margin-bottom:14px; box-shadow:0 2px 12px rgba(0,0,0,0.09); }
+.result-card.normal { background:#eafaf1; border:2px solid #27ae60; }
+.result-card.abnormal { background:#fdedec; border:2px solid #e74c3c; }
+.result-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.result-icon { font-size:30px; }
+.result-title { font-size:17px; font-weight:700; }
+.result-card.normal .result-title { color:#1e8449; }
+.result-card.abnormal .result-title { color:#c0392b; }
+.result-detail { background:white; border-radius:10px; overflow:hidden; margin-top:10px; }
+.result-row { display:flex; padding:10px 14px; font-size:14px; border-bottom:1px solid #f0f0f0; align-items:center; }
+.result-row:last-child { border-bottom:none; }
+.result-label { color:#888; width:90px; flex-shrink:0; font-size:13px; }
+.result-value { color:#222; font-weight:600; }
+.result-value.bad { color:#e74c3c; font-size:16px; }
+.alert-box { background:#fef9e7; border:1.5px solid #f39c12; border-radius:10px; padding:12px 14px; margin-top:10px; font-size:13px; color:#7d6608; }
+.again-btn { display:block; width:100%; padding:14px; background:white; color:#2980b9; border:2px solid #2980b9; border-radius:14px; font-size:16px; font-weight:700; cursor:pointer; margin-top:14px; text-align:center; }
+.spinner { display:inline-block; width:16px; height:16px; border:3px solid #ccc; border-top-color:#2980b9; border-radius:50%; animation:spin 0.8s linear infinite; vertical-align:middle; margin-right:6px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.time-display { padding:12px 14px; background:#eaf4fb; border:1.5px solid #2980b9; border-radius:10px; font-size:16px; color:#1a5276; font-weight:600; }
 </style>
 </head>
 <body>
 
-<!-- 語言選擇頁 -->
 <div id="lang-screen">
   <h1>🌡️ 冷鏈溫度巡檢系統</h1>
   <p>請選擇語言 / Please select language</p>
@@ -131,7 +115,6 @@
   </div>
 </div>
 
-<!-- 主畫面 -->
 <div id="main-screen">
   <div class="header">
     <h1 id="txt-title"></h1>
@@ -148,10 +131,7 @@
       </div>
       <div class="field">
         <label id="txt-time-label"></label>
-        <div class="time-btns">
-          <button class="time-btn" id="btn-morning" onclick="selectTime(this,'morning')"></button>
-          <button class="time-btn" id="btn-evening" onclick="selectTime(this,'evening')"></button>
-        </div>
+        <div class="time-display" id="auto-time-display">--:--:--</div>
         <input type="hidden" id="f-timeslot">
       </div>
       <div class="field">
@@ -174,8 +154,7 @@
     <button class="submit-btn" id="txt-submit-btn" onclick="submitForm()"></button>
   </div>
 
-  <!-- AI浮層 -->
-  <div id="ai-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.78); z-index:999; display:none; align-items:center; justify-content:center;">
+  <div id="ai-overlay">
     <div class="ai-box">
       <h3 style="margin-bottom:14px;color:#1a5276;" id="txt-ai-title"></h3>
       <img id="ai-preview">
@@ -190,16 +169,16 @@
         </div>
       </div>
       <div class="ai-btns">
-        <label class="ai-btn blue" id="lbl-camera">
+        <label class="ai-btn" style="background:#2980b9;color:white;">
           <span id="txt-btn-camera"></span>
           <input type="file" accept="image/*" capture="environment" id="ai-camera" style="display:none" onchange="handlePhoto(event)">
         </label>
-        <label class="ai-btn gray2" id="lbl-gallery">
+        <label class="ai-btn" style="background:#7f8c8d;color:white;">
           <span id="txt-btn-gallery"></span>
           <input type="file" accept="image/*" id="ai-gallery" style="display:none" onchange="handlePhoto(event)">
         </label>
-        <button class="ai-btn green" id="ai-confirm-btn" onclick="confirmTemp()"></button>
-        <button class="ai-btn gray" onclick="closeOverlay()" id="txt-btn-cancel"></button>
+        <button class="ai-btn" id="ai-confirm-btn" style="background:#27ae60;color:white;display:none;" onclick="confirmTemp()"></button>
+        <button class="ai-btn" style="background:#ecf0f1;color:#555;" onclick="closeOverlay()" id="txt-btn-cancel"></button>
       </div>
     </div>
   </div>
@@ -209,427 +188,435 @@
 </div>
 
 <script>
-// ── 多語言字典 ────────────────────────────────────────────
-const LANGS = {
-  zh:
-    timeLabel:'巡檢時間（自動記錄）', {
-    flag:'🇹🇼', title:'🌡️ 冷鏈溫度巡檢表', subtitle:'拍照後 AI 自動辨識溫度，填完即判斷異常',
-    basicInfo:'📋 基本資訊', dateLabel:'巡檢日期 *', timeLabel:'巡檢時段 *',
-    morning:'🌅 早班', evening:'🌙 晚班', inspectorLabel:'巡檢人員 *', inspectorPlaceholder:'請輸入姓名',
-    deviceTitle:'🧊 各設備溫度記錄', deviceHint:'點「📷 拍照辨識」或直接手動輸入溫度',
-    photoBtn:'📷 拍照辨識溫度', remarkTitle:'📝 備註', remarkPlaceholder:'如有異狀請記錄（選填）',
-    submitBtn:'✅ 送出巡檢記錄',
-    aiTitle:'📷 拍照辨識溫度', aiStatus:'請拍攝溫度計螢幕或刻度，AI 將自動讀取數值',
-    aiResultLabel:'AI 辨識結果', aiCorrectHint:'如有誤差，可在下方修正後確認',
-    btnCamera:'📷 拍照', btnGallery:'🖼️ 選圖', btnConfirm:'✅ 確認使用', btnCancel:'取消',
-    aiRecognizing:'AI 正在辨識溫度中…', aiDone:'✅ 辨識完成，請確認數值是否正確',
-    aiFail:'⚠️ 無法辨識，請重新拍攝或手動輸入',
-    normalTitle:'✅ 所有設備溫度正常', normalMsg:'本次巡檢所有設備均符合法規標準。',
-    abnormalTitle:'⚠️ 偵測到溫度異常！', abnormalMsg:'以下設備超出法規標準，請立即確認處理。',
-    statusNormal:'✅ 正常', statusAbnormal:'❌ 異常',
-    labelTemp:'實測溫度', labelType:'設備類型', labelThreshold:'異常門檻', labelPhoto:'巡檢照片',
-    alertText:'🔔 處理建議：請立即前往現場確認設備狀況，記錄處置措施並通知主管。',
-    summaryTitle:'📋 本次巡檢摘要', labelDate:'日期', labelSlot:'時段', labelInspector:'巡檢員',
-    labelCount:'巡檢台數', labelAbnCount:'異常台數', labelRemark:'備註', unitTai:'台',
-    againBtn:'🔄 再填一筆',
-    fridgeRange:'正常範圍：≤ 7°C', freezerRange:'正常範圍：≤ -18°C',
-    fridgeThreshold:'> 7°C', freezerThreshold:'> -18°C',
-    alertDate:'請選擇巡檢日期', alertInspector:'請輸入巡檢人員姓名',
-    alertTemp:'請至少填寫一台設備的溫度', alertValidTemp:'請輸入有效的溫度數值',
-    fridge:'冷藏', freezer:'冷凍',
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzj_Sht3PErdwKk5u7fV4erv3_73Ibi-Duh1NvZbpmInqE8AnENYkO5gy-DF1CYNOP3/exec";
+
+var LANGS = {
+  zh: {
+    title:"🌡️ 冷鏈溫度巡檢表", subtitle:"拍照後 AI 自動辨識溫度",
+    basicInfo:"📋 基本資訊", dateLabel:"巡檢日期 *", timeLabel:"巡檢時間（自動記錄）",
+    inspectorLabel:"巡檢人員 *", inspectorPlaceholder:"請輸入姓名",
+    deviceTitle:"🧊 各設備溫度記錄", deviceHint:"點「📷 拍照辨識」或直接手動輸入溫度",
+    photoBtn:"📷 拍照辨識溫度", remarkTitle:"📝 備註", remarkPlaceholder:"如有異狀請記錄（選填）",
+    submitBtn:"✅ 送出巡檢記錄",
+    aiTitle:"📷 拍照辨識溫度", aiStatus:"請拍攝溫度計，AI 將自動讀取數值",
+    aiResultLabel:"AI 辨識結果", aiCorrectHint:"如有誤差可修正後確認",
+    btnCamera:"📷 拍照", btnGallery:"🖼️ 選圖", btnConfirm:"✅ 確認使用", btnCancel:"取消",
+    aiRecognizing:"AI 正在辨識溫度中…", aiDone:"✅ 辨識完成，請確認數值",
+    aiFail:"⚠️ 無法辨識，請重新拍攝或手動輸入",
+    normalTitle:"✅ 所有設備溫度正常", normalMsg:"本次巡檢所有設備均符合法規標準。",
+    abnormalTitle:"⚠️ 偵測到溫度異常！", abnormalMsg:"以下設備超出法規標準，請立即確認處理。",
+    statusNormal:"✅ 正常", statusAbnormal:"❌ 異常",
+    labelTemp:"實測溫度", labelType:"設備類型", labelThreshold:"異常門檻", labelPhoto:"巡檢照片",
+    alertText:"🔔 處理建議：請立即前往現場確認設備狀況，記錄處置措施並通知主管。",
+    summaryTitle:"📋 本次巡檢摘要", labelDate:"日期", labelTime:"巡檢時間", labelInspector:"巡檢員",
+    labelCount:"巡檢台數", labelAbnCount:"異常台數", labelRemark:"備註", unitTai:"台",
+    againBtn:"🔄 再填一筆",
+    fridgeRange:"正常範圍：≤ 7°C", freezerRange:"正常範圍：≤ -18°C",
+    fridgeThreshold:"> 7°C", freezerThreshold:"> -18°C",
+    alertDate:"請選擇巡檢日期", alertInspector:"請輸入巡檢人員姓名",
+    alertTemp:"請至少填寫一台設備的溫度", alertValidTemp:"請輸入有效的溫度數值",
+    fridge:"冷藏", freezer:"冷凍"
   },
-  en:
-    timeLabel:'Inspection Time (Auto)', {
-    flag:'🇬🇧', title:'🌡️ Cold Chain Temperature Log', subtitle:'AI reads temperature from photo & checks for alerts',
-    basicInfo:'📋 Basic Information', dateLabel:'Inspection Date *', timeLabel:'Time Slot *',
-    morning:'🌅 Morning', evening:'🌙 Evening', inspectorLabel:'Inspector *', inspectorPlaceholder:'Enter your name',
-    deviceTitle:'🧊 Device Temperature Record', deviceHint:'Tap 📷 to scan or enter temperature manually',
-    photoBtn:'📷 Scan Temperature', remarkTitle:'📝 Remarks', remarkPlaceholder:'Notes (optional)',
-    submitBtn:'✅ Submit Inspection',
-    aiTitle:'📷 AI Temperature Recognition', aiStatus:'Take a photo of the thermometer. AI will read the value.',
-    aiResultLabel:'AI Recognition Result', aiCorrectHint:'Correct if needed, then confirm.',
-    btnCamera:'📷 Camera', btnGallery:'🖼️ Gallery', btnConfirm:'✅ Confirm', btnCancel:'Cancel',
-    aiRecognizing:'AI is reading the temperature…', aiDone:'✅ Done. Please verify the value.',
-    aiFail:'⚠️ Unable to read. Please retake or enter manually.',
-    normalTitle:'✅ All Temperatures Normal', normalMsg:'All devices are within legal limits.',
-    abnormalTitle:'⚠️ Temperature Alert!', abnormalMsg:'The following devices exceeded the limit. Please act immediately.',
-    statusNormal:'✅ Normal', statusAbnormal:'❌ Abnormal',
-    labelTemp:'Temperature', labelType:'Type', labelThreshold:'Alert Limit', labelPhoto:'Photo',
-    alertText:'🔔 Action Required: Please inspect the equipment immediately and report to your supervisor.',
-    summaryTitle:'📋 Inspection Summary', labelDate:'Date', labelSlot:'Slot', labelInspector:'Inspector',
-    labelCount:'Devices Checked', labelAbnCount:'Abnormal', labelRemark:'Remarks', unitTai:'',
-    againBtn:'🔄 New Entry',
-    fridgeRange:'Normal: ≤ 7°C', freezerRange:'Normal: ≤ -18°C',
-    fridgeThreshold:'> 7°C', freezerThreshold:'> -18°C',
-    alertDate:'Please select date', alertInspector:'Please enter inspector name',
-    alertTemp:'Please enter temperature for at least one device', alertValidTemp:'Please enter a valid temperature',
-    fridge:'Refrigerator', freezer:'Freezer',
+  en: {
+    title:"🌡️ Cold Chain Temperature Log", subtitle:"AI reads temperature from photo automatically",
+    basicInfo:"📋 Basic Information", dateLabel:"Inspection Date *", timeLabel:"Inspection Time (Auto)",
+    inspectorLabel:"Inspector *", inspectorPlaceholder:"Enter your name",
+    deviceTitle:"🧊 Device Temperature Record", deviceHint:"Tap 📷 to scan or enter manually",
+    photoBtn:"📷 Scan Temperature", remarkTitle:"📝 Remarks", remarkPlaceholder:"Notes (optional)",
+    submitBtn:"✅ Submit Inspection",
+    aiTitle:"📷 AI Temperature Recognition", aiStatus:"Take a photo of the thermometer.",
+    aiResultLabel:"AI Result", aiCorrectHint:"Correct if needed, then confirm.",
+    btnCamera:"📷 Camera", btnGallery:"🖼️ Gallery", btnConfirm:"✅ Confirm", btnCancel:"Cancel",
+    aiRecognizing:"AI is reading the temperature…", aiDone:"✅ Done. Please verify.",
+    aiFail:"⚠️ Unable to read. Retake or enter manually.",
+    normalTitle:"✅ All Temperatures Normal", normalMsg:"All devices within legal limits.",
+    abnormalTitle:"⚠️ Temperature Alert!", abnormalMsg:"Devices exceeded the limit. Please act immediately.",
+    statusNormal:"✅ Normal", statusAbnormal:"❌ Abnormal",
+    labelTemp:"Temperature", labelType:"Type", labelThreshold:"Alert Limit", labelPhoto:"Photo",
+    alertText:"🔔 Action Required: Please inspect equipment immediately and report to supervisor.",
+    summaryTitle:"📋 Inspection Summary", labelDate:"Date", labelTime:"Time", labelInspector:"Inspector",
+    labelCount:"Devices Checked", labelAbnCount:"Abnormal", labelRemark:"Remarks", unitTai:"",
+    againBtn:"🔄 New Entry",
+    fridgeRange:"Normal: ≤ 7°C", freezerRange:"Normal: ≤ -18°C",
+    fridgeThreshold:"> 7°C", freezerThreshold:"> -18°C",
+    alertDate:"Please select date", alertInspector:"Please enter inspector name",
+    alertTemp:"Please enter temperature for at least one device", alertValidTemp:"Please enter valid temperature",
+    fridge:"Refrigerator", freezer:"Freezer"
   },
-  vi:
-    timeLabel:'Thời Gian (Tự Động)', {
-    flag:'🇻🇳', title:'🌡️ Bảng Kiểm Tra Nhiệt Độ', subtitle:'AI tự động nhận dạng nhiệt độ từ ảnh chụp',
-    basicInfo:'📋 Thông Tin Cơ Bản', dateLabel:'Ngày Kiểm Tra *', timeLabel:'Ca Làm Việc *',
-    morning:'🌅 Ca Sáng', evening:'🌙 Ca Tối', inspectorLabel:'Người Kiểm Tra *', inspectorPlaceholder:'Nhập tên của bạn',
-    deviceTitle:'🧊 Ghi Nhiệt Độ Thiết Bị', deviceHint:'Chụp ảnh 📷 hoặc nhập nhiệt độ thủ công',
-    photoBtn:'📷 Chụp Ảnh Nhận Dạng', remarkTitle:'📝 Ghi Chú', remarkPlaceholder:'Ghi chú nếu có vấn đề (tùy chọn)',
-    submitBtn:'✅ Gửi Báo Cáo Kiểm Tra',
-    aiTitle:'📷 Nhận Dạng Nhiệt Độ AI', aiStatus:'Chụp ảnh nhiệt kế, AI sẽ tự động đọc giá trị.',
-    aiResultLabel:'Kết Quả AI', aiCorrectHint:'Chỉnh sửa nếu cần, sau đó xác nhận.',
-    btnCamera:'📷 Chụp Ảnh', btnGallery:'🖼️ Thư Viện', btnConfirm:'✅ Xác Nhận', btnCancel:'Hủy',
-    aiRecognizing:'AI đang nhận dạng nhiệt độ…', aiDone:'✅ Xong. Vui lòng kiểm tra giá trị.',
-    aiFail:'⚠️ Không thể nhận dạng. Hãy chụp lại hoặc nhập thủ công.',
-    normalTitle:'✅ Tất Cả Nhiệt Độ Bình Thường', normalMsg:'Tất cả thiết bị đều trong giới hạn cho phép.',
-    abnormalTitle:'⚠️ Cảnh Báo Nhiệt Độ!', abnormalMsg:'Các thiết bị sau vượt quá giới hạn. Vui lòng xử lý ngay.',
-    statusNormal:'✅ Bình Thường', statusAbnormal:'❌ Bất Thường',
-    labelTemp:'Nhiệt Độ', labelType:'Loại', labelThreshold:'Ngưỡng Cảnh Báo', labelPhoto:'Ảnh',
-    alertText:'🔔 Hành Động: Vui lòng kiểm tra thiết bị ngay và báo cáo cho quản lý.',
-    summaryTitle:'📋 Tóm Tắt Kiểm Tra', labelDate:'Ngày', labelSlot:'Ca', labelInspector:'Người Kiểm',
-    labelCount:'Số Thiết Bị', labelAbnCount:'Bất Thường', labelRemark:'Ghi Chú', unitTai:'',
-    againBtn:'🔄 Nhập Lại',
-    fridgeRange:'Bình thường: ≤ 7°C', freezerRange:'Bình thường: ≤ -18°C',
-    fridgeThreshold:'> 7°C', freezerThreshold:'> -18°C',
-    alertDate:'Vui lòng chọn ngày', alertInspector:'Vui lòng nhập tên người kiểm tra',
-    alertTemp:'Vui lòng nhập nhiệt độ cho ít nhất một thiết bị', alertValidTemp:'Vui lòng nhập nhiệt độ hợp lệ',
-    fridge:'Tủ Lạnh', freezer:'Tủ Đông',
+  vi: {
+    title:"🌡️ Bảng Kiểm Tra Nhiệt Độ", subtitle:"AI tự động nhận dạng nhiệt độ từ ảnh chụp",
+    basicInfo:"📋 Thông Tin Cơ Bản", dateLabel:"Ngày Kiểm Tra *", timeLabel:"Thời Gian (Tự Động)",
+    inspectorLabel:"Người Kiểm Tra *", inspectorPlaceholder:"Nhập tên của bạn",
+    deviceTitle:"🧊 Ghi Nhiệt Độ Thiết Bị", deviceHint:"Chụp ảnh 📷 hoặc nhập thủ công",
+    photoBtn:"📷 Chụp Ảnh", remarkTitle:"📝 Ghi Chú", remarkPlaceholder:"Ghi chú (tùy chọn)",
+    submitBtn:"✅ Gửi Báo Cáo",
+    aiTitle:"📷 Nhận Dạng Nhiệt Độ AI", aiStatus:"Chụp ảnh nhiệt kế. AI sẽ đọc giá trị.",
+    aiResultLabel:"Kết Quả AI", aiCorrectHint:"Chỉnh sửa nếu cần, sau đó xác nhận.",
+    btnCamera:"📷 Chụp Ảnh", btnGallery:"🖼️ Thư Viện", btnConfirm:"✅ Xác Nhận", btnCancel:"Hủy",
+    aiRecognizing:"AI đang nhận dạng…", aiDone:"✅ Xong. Vui lòng kiểm tra.",
+    aiFail:"⚠️ Không thể nhận dạng. Chụp lại hoặc nhập thủ công.",
+    normalTitle:"✅ Tất Cả Nhiệt Độ Bình Thường", normalMsg:"Tất cả thiết bị trong giới hạn cho phép.",
+    abnormalTitle:"⚠️ Cảnh Báo Nhiệt Độ!", abnormalMsg:"Vượt quá giới hạn. Vui lòng xử lý ngay.",
+    statusNormal:"✅ Bình Thường", statusAbnormal:"❌ Bất Thường",
+    labelTemp:"Nhiệt Độ", labelType:"Loại", labelThreshold:"Ngưỡng", labelPhoto:"Ảnh",
+    alertText:"🔔 Hành Động: Kiểm tra thiết bị ngay và báo cáo quản lý.",
+    summaryTitle:"📋 Tóm Tắt", labelDate:"Ngày", labelTime:"Thời Gian", labelInspector:"Người Kiểm",
+    labelCount:"Số Thiết Bị", labelAbnCount:"Bất Thường", labelRemark:"Ghi Chú", unitTai:"",
+    againBtn:"🔄 Nhập Lại",
+    fridgeRange:"Bình thường: ≤ 7°C", freezerRange:"Bình thường: ≤ -18°C",
+    fridgeThreshold:"> 7°C", freezerThreshold:"> -18°C",
+    alertDate:"Vui lòng chọn ngày", alertInspector:"Vui lòng nhập tên",
+    alertTemp:"Vui lòng nhập nhiệt độ ít nhất 1 thiết bị", alertValidTemp:"Nhập nhiệt độ hợp lệ",
+    fridge:"Tủ Lạnh", freezer:"Tủ Đông"
   },
-  id:
-    timeLabel:'Waktu (Otomatis)', {
-    flag:'🇮🇩', title:'🌡️ Formulir Suhu Rantai Dingin', subtitle:'AI membaca suhu dari foto secara otomatis',
-    basicInfo:'📋 Informasi Dasar', dateLabel:'Tanggal Inspeksi *', timeLabel:'Shift *',
-    morning:'🌅 Shift Pagi', evening:'🌙 Shift Malam', inspectorLabel:'Petugas Inspeksi *', inspectorPlaceholder:'Masukkan nama Anda',
-    deviceTitle:'🧊 Catatan Suhu Perangkat', deviceHint:'Foto 📷 atau masukkan suhu secara manual',
-    photoBtn:'📷 Foto & Kenali Suhu', remarkTitle:'📝 Catatan', remarkPlaceholder:'Catatan jika ada masalah (opsional)',
-    submitBtn:'✅ Kirim Laporan Inspeksi',
-    aiTitle:'📷 Pengenalan Suhu AI', aiStatus:'Ambil foto termometer. AI akan membaca nilainya.',
-    aiResultLabel:'Hasil AI', aiCorrectHint:'Koreksi jika perlu, lalu konfirmasi.',
-    btnCamera:'📷 Kamera', btnGallery:'🖼️ Galeri', btnConfirm:'✅ Konfirmasi', btnCancel:'Batal',
-    aiRecognizing:'AI sedang membaca suhu…', aiDone:'✅ Selesai. Harap periksa nilainya.',
-    aiFail:'⚠️ Tidak dapat dikenali. Foto ulang atau masukkan manual.',
-    normalTitle:'✅ Semua Suhu Normal', normalMsg:'Semua perangkat dalam batas yang diizinkan.',
-    abnormalTitle:'⚠️ Peringatan Suhu!', abnormalMsg:'Perangkat berikut melebihi batas. Harap segera bertindak.',
-    statusNormal:'✅ Normal', statusAbnormal:'❌ Tidak Normal',
-    labelTemp:'Suhu', labelType:'Tipe', labelThreshold:'Batas Peringatan', labelPhoto:'Foto',
-    alertText:'🔔 Tindakan: Harap periksa perangkat segera dan laporkan ke supervisor.',
-    summaryTitle:'📋 Ringkasan Inspeksi', labelDate:'Tanggal', labelSlot:'Shift', labelInspector:'Petugas',
-    labelCount:'Perangkat Diperiksa', labelAbnCount:'Tidak Normal', labelRemark:'Catatan', unitTai:'',
-    againBtn:'🔄 Entri Baru',
-    fridgeRange:'Normal: ≤ 7°C', freezerRange:'Normal: ≤ -18°C',
-    fridgeThreshold:'> 7°C', freezerThreshold:'> -18°C',
-    alertDate:'Pilih tanggal', alertInspector:'Masukkan nama petugas',
-    alertTemp:'Masukkan suhu untuk minimal satu perangkat', alertValidTemp:'Masukkan suhu yang valid',
-    fridge:'Lemari Pendingin', freezer:'Freezer',
+  id: {
+    title:"🌡️ Formulir Suhu Rantai Dingin", subtitle:"AI membaca suhu dari foto secara otomatis",
+    basicInfo:"📋 Informasi Dasar", dateLabel:"Tanggal Inspeksi *", timeLabel:"Waktu (Otomatis)",
+    inspectorLabel:"Petugas *", inspectorPlaceholder:"Masukkan nama Anda",
+    deviceTitle:"🧊 Catatan Suhu Perangkat", deviceHint:"Foto 📷 atau masukkan manual",
+    photoBtn:"📷 Foto & Kenali Suhu", remarkTitle:"📝 Catatan", remarkPlaceholder:"Catatan (opsional)",
+    submitBtn:"✅ Kirim Laporan",
+    aiTitle:"📷 Pengenalan Suhu AI", aiStatus:"Ambil foto termometer.",
+    aiResultLabel:"Hasil AI", aiCorrectHint:"Koreksi jika perlu, lalu konfirmasi.",
+    btnCamera:"📷 Kamera", btnGallery:"🖼️ Galeri", btnConfirm:"✅ Konfirmasi", btnCancel:"Batal",
+    aiRecognizing:"AI sedang membaca…", aiDone:"✅ Selesai. Harap periksa.",
+    aiFail:"⚠️ Tidak dapat dikenali. Foto ulang atau masukkan manual.",
+    normalTitle:"✅ Semua Suhu Normal", normalMsg:"Semua perangkat dalam batas yang diizinkan.",
+    abnormalTitle:"⚠️ Peringatan Suhu!", abnormalMsg:"Melebihi batas. Harap segera bertindak.",
+    statusNormal:"✅ Normal", statusAbnormal:"❌ Tidak Normal",
+    labelTemp:"Suhu", labelType:"Tipe", labelThreshold:"Batas", labelPhoto:"Foto",
+    alertText:"🔔 Tindakan: Periksa perangkat segera dan laporkan ke supervisor.",
+    summaryTitle:"📋 Ringkasan", labelDate:"Tanggal", labelTime:"Waktu", labelInspector:"Petugas",
+    labelCount:"Perangkat", labelAbnCount:"Tidak Normal", labelRemark:"Catatan", unitTai:"",
+    againBtn:"🔄 Entri Baru",
+    fridgeRange:"Normal: ≤ 7°C", freezerRange:"Normal: ≤ -18°C",
+    fridgeThreshold:"> 7°C", freezerThreshold:"> -18°C",
+    alertDate:"Pilih tanggal", alertInspector:"Masukkan nama petugas",
+    alertTemp:"Masukkan suhu minimal satu perangkat", alertValidTemp:"Masukkan suhu yang valid",
+    fridge:"Lemari Pendingin", freezer:"Freezer"
   },
   th: {
-    flag:'🇹🇭', title:'🌡️ แบบฟอร์มตรวจสอบอุณหภูมิ', subtitle:'AI อ่านอุณหภูมิจากรูปถ่ายโดยอัตโนมัติ',
-    basicInfo:'📋 ข้อมูลพื้นฐาน', dateLabel:'วันที่ตรวจสอบ *', timeLabel:'กะการทำงาน *',
-    morning:'🌅 กะเช้า', evening:'🌙 กะเย็น', inspectorLabel:'ผู้ตรวจสอบ *', inspectorPlaceholder:'กรอกชื่อของคุณ',
-    deviceTitle:'🧊 บันทึกอุณหภูมิอุปกรณ์', deviceHint:'ถ่ายรูป 📷 หรือกรอกอุณหภูมิด้วยตนเอง',
-    photoBtn:'📷 ถ่ายรูปอ่านอุณหภูมิ', remarkTitle:'📝 หมายเหตุ', remarkPlaceholder:'บันทึกหากมีปัญหา (ไม่บังคับ)',
-    submitBtn:'✅ ส่งรายงานการตรวจสอบ',
-    aiTitle:'📷 AI อ่านอุณหภูมิ', aiStatus:'ถ่ายรูปเทอร์โมมิเตอร์ AI จะอ่านค่าให้อัตโนมัติ',
-    aiResultLabel:'ผลการอ่านของ AI', aiCorrectHint:'แก้ไขหากจำเป็น แล้วยืนยัน',
-    btnCamera:'📷 ถ่ายรูป', btnGallery:'🖼️ แกลเลอรี', btnConfirm:'✅ ยืนยัน', btnCancel:'ยกเลิก',
-    aiRecognizing:'AI กำลังอ่านอุณหภูมิ…', aiDone:'✅ เสร็จแล้ว กรุณาตรวจสอบค่า',
-    aiFail:'⚠️ ไม่สามารถอ่านได้ กรุณาถ่ายใหม่หรือกรอกด้วยตนเอง',
-    normalTitle:'✅ อุณหภูมิทุกเครื่องปกติ', normalMsg:'อุปกรณ์ทั้งหมดอยู่ในเกณฑ์มาตรฐาน',
-    abnormalTitle:'⚠️ พบอุณหภูมิผิดปกติ!', abnormalMsg:'อุปกรณ์ต่อไปนี้เกินมาตรฐาน กรุณาดำเนินการทันที',
-    statusNormal:'✅ ปกติ', statusAbnormal:'❌ ผิดปกติ',
-    labelTemp:'อุณหภูมิ', labelType:'ประเภท', labelThreshold:'เกณฑ์เตือน', labelPhoto:'รูปถ่าย',
-    alertText:'🔔 การดำเนินการ: กรุณาตรวจสอบอุปกรณ์ทันทีและรายงานผู้ควบคุม',
-    summaryTitle:'📋 สรุปการตรวจสอบ', labelDate:'วันที่', labelSlot:'กะ', labelInspector:'ผู้ตรวจ',
-    labelCount:'จำนวนที่ตรวจ', labelAbnCount:'ผิดปกติ', labelRemark:'หมายเหตุ', unitTai:'เครื่อง',
-    againBtn:'🔄 บันทึกใหม่',
-    fridgeRange:'ปกติ: ≤ 7°C', freezerRange:'ปกติ: ≤ -18°C',
-    fridgeThreshold:'> 7°C', freezerThreshold:'> -18°C',
-    alertDate:'กรุณาเลือกวันที่', alertInspector:'กรุณากรอกชื่อผู้ตรวจ',
-    alertTemp:'กรุณากรอกอุณหภูมิอย่างน้อย 1 เครื่อง', alertValidTemp:'กรุณากรอกอุณหภูมิที่ถูกต้อง',
-    fridge:'ตู้เย็น', freezer:'ตู้แช่แข็ง',
+    title:"🌡️ แบบฟอร์มตรวจสอบอุณหภูมิ", subtitle:"AI อ่านอุณหภูมิจากรูปถ่ายโดยอัตโนมัติ",
+    basicInfo:"📋 ข้อมูลพื้นฐาน", dateLabel:"วันที่ตรวจสอบ *", timeLabel:"เวลา (อัตโนมัติ)",
+    inspectorLabel:"ผู้ตรวจสอบ *", inspectorPlaceholder:"กรอกชื่อของคุณ",
+    deviceTitle:"🧊 บันทึกอุณหภูมิอุปกรณ์", deviceHint:"ถ่ายรูป 📷 หรือกรอกด้วยตนเอง",
+    photoBtn:"📷 ถ่ายรูปอ่านอุณหภูมิ", remarkTitle:"📝 หมายเหตุ", remarkPlaceholder:"บันทึกหากมีปัญหา (ไม่บังคับ)",
+    submitBtn:"✅ ส่งรายงาน",
+    aiTitle:"📷 AI อ่านอุณหภูมิ", aiStatus:"ถ่ายรูปเทอร์โมมิเตอร์ AI จะอ่านค่าให้อัตโนมัติ",
+    aiResultLabel:"ผลการอ่านของ AI", aiCorrectHint:"แก้ไขหากจำเป็น แล้วยืนยัน",
+    btnCamera:"📷 ถ่ายรูป", btnGallery:"🖼️ แกลเลอรี", btnConfirm:"✅ ยืนยัน", btnCancel:"ยกเลิก",
+    aiRecognizing:"AI กำลังอ่านอุณหภูมิ…", aiDone:"✅ เสร็จแล้ว กรุณาตรวจสอบ",
+    aiFail:"⚠️ ไม่สามารถอ่านได้ กรุณาถ่ายใหม่หรือกรอกด้วยตนเอง",
+    normalTitle:"✅ อุณหภูมิทุกเครื่องปกติ", normalMsg:"อุปกรณ์ทั้งหมดอยู่ในเกณฑ์มาตรฐาน",
+    abnormalTitle:"⚠️ พบอุณหภูมิผิดปกติ!", abnormalMsg:"อุปกรณ์ต่อไปนี้เกินมาตรฐาน กรุณาดำเนินการทันที",
+    statusNormal:"✅ ปกติ", statusAbnormal:"❌ ผิดปกติ",
+    labelTemp:"อุณหภูมิ", labelType:"ประเภท", labelThreshold:"เกณฑ์", labelPhoto:"รูปถ่าย",
+    alertText:"🔔 การดำเนินการ: กรุณาตรวจสอบอุปกรณ์ทันทีและรายงานผู้ควบคุม",
+    summaryTitle:"📋 สรุป", labelDate:"วันที่", labelTime:"เวลา", labelInspector:"ผู้ตรวจ",
+    labelCount:"จำนวน", labelAbnCount:"ผิดปกติ", labelRemark:"หมายเหตุ", unitTai:"เครื่อง",
+    againBtn:"🔄 บันทึกใหม่",
+    fridgeRange:"ปกติ: ≤ 7°C", freezerRange:"ปกติ: ≤ -18°C",
+    fridgeThreshold:"> 7°C", freezerThreshold:"> -18°C",
+    alertDate:"กรุณาเลือกวันที่", alertInspector:"กรุณากรอกชื่อผู้ตรวจ",
+    alertTemp:"กรุณากรอกอุณหภูมิอย่างน้อย 1 เครื่อง", alertValidTemp:"กรุณากรอกอุณหภูมิที่ถูกต้อง",
+    fridge:"ตู้เย็น", freezer:"ตู้แช่แข็ง"
   }
 };
 
-const DEVICES_DEF = [
-  { id:'d1', typeKey:'fridge', icon:'❄️', max:7  },
-  { id:'d2', typeKey:'fridge', icon:'❄️', max:7  },
-  { id:'d3', typeKey:'freezer', icon:'🧊', max:-18 },
-  { id:'d4', typeKey:'freezer', icon:'🧊', max:-18 },
+var DEVICES = [
+  {id:"d1", typeKey:"freezer", icon:"🧊", max:-18, num:1},
+  {id:"d2", typeKey:"fridge",  icon:"❄️", max:7,   num:1},
+  {id:"d3", typeKey:"fridge",  icon:"❄️", max:7,   num:2},
+  {id:"d4", typeKey:"freezer", icon:"🧊", max:-18, num:2},
+  {id:"d5", typeKey:"fridge",  icon:"❄️", max:7,   num:3}
 ];
 
-let currentLang = 'zh';
-const photoData = {};
+var currentLang = "zh";
+var photoData = {};
+var timerInterval = null;
+
+function t(key) { return LANGS[currentLang][key] || key; }
 
 function setLang(lang) {
   currentLang = lang;
-  document.getElementById('lang-screen').style.display = 'none';
-  document.getElementById('main-screen').style.display = 'block';
+  document.getElementById("lang-screen").style.display = "none";
+  document.getElementById("main-screen").style.display = "block";
   applyLang();
   initForm();
 }
 
 function goLangScreen() {
-  document.getElementById('main-screen').style.display = 'none';
-  document.getElementById('lang-screen').style.display = 'flex';
+  document.getElementById("main-screen").style.display = "none";
+  document.getElementById("lang-screen").style.display = "flex";
+  if (timerInterval) clearInterval(timerInterval);
 }
-
-function t(key) { return LANGS[currentLang][key] || key; }
 
 function applyLang() {
-  const L = LANGS[currentLang];
-  document.getElementById('txt-title').textContent = L.title;
-  document.getElementById('txt-subtitle').textContent = L.subtitle;
-  document.getElementById('txt-basic-info').textContent = L.basicInfo;
-  document.getElementById('txt-date-label').textContent = L.dateLabel;
-  document.getElementById('txt-time-label').textContent = L.slotLabel;
-  document.getElementById('txt-time-label').textContent = L.timeLabel;
-  document.getElementById('txt-inspector-label').textContent = L.inspectorLabel;
-  document.getElementById('f-inspector').placeholder = L.inspectorPlaceholder;
-  document.getElementById('txt-device-title').textContent = L.deviceTitle;
-  document.getElementById('txt-device-hint').textContent = L.deviceHint;
-  document.getElementById('txt-remark-title').textContent = L.remarkTitle;
-  document.getElementById('f-remark').placeholder = L.remarkPlaceholder;
-  document.getElementById('txt-submit-btn').textContent = L.submitBtn;
-  document.getElementById('txt-ai-title').textContent = L.aiTitle;
-  document.getElementById('ai-status').textContent = L.aiStatus;
-  document.getElementById('txt-ai-result-label').textContent = L.aiResultLabel;
-  document.getElementById('txt-ai-correct-hint').textContent = L.aiCorrectHint;
-  document.getElementById('txt-btn-camera').textContent = L.btnCamera;
-  document.getElementById('txt-btn-gallery').textContent = L.btnGallery;
-  document.getElementById('ai-confirm-btn').textContent = L.btnConfirm;
-  document.getElementById('txt-btn-cancel').textContent = L.btnCancel;
-}
-
-function initForm() {
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm   = String(today.getMonth()+1).padStart(2,'0');
-  const dd   = String(today.getDate()).padStart(2,'0');
-  document.getElementById('f-date').value = `${yyyy}-${mm}-${dd}`;
-  updateAutoTime();
-
-  const list = document.getElementById('device-list');
-  list.innerHTML = '';
-  DEVICES_DEF.forEach((d, i) => {
-    const typeLabel = t(d.typeKey);
-    const rangeLabel = d.typeKey === 'fridge' ? t('fridgeRange') : t('freezerRange');
-    const num = i < 2 ? (i+1) : (i-1);
-    const nameLabel = `${typeLabel} ${num}`;
-    list.innerHTML += `
-      <div class="device-item" id="item-${d.id}">
-        <div class="device-icon">${d.icon}</div>
-        <div class="device-info">
-          <div class="device-name">${nameLabel}</div>
-          <div class="device-type">${typeLabel}｜${rangeLabel}</div>
-          <button class="photo-btn" onclick="openOverlay('${d.id}')">${t('photoBtn')}</button>
-        </div>
-        <div class="device-right">
-          <div class="temp-row">
-            <input type="number" id="temp-${d.id}" placeholder="--" step="0.1" oninput="activateDevice('${d.id}')">
-            <span>°C</span>
-          </div>
-          <img class="thumb-img" id="thumb-${d.id}">
-        </div>
-      </div>`;
-  });
+  document.getElementById("txt-title").textContent = t("title");
+  document.getElementById("txt-subtitle").textContent = t("subtitle");
+  document.getElementById("txt-basic-info").textContent = t("basicInfo");
+  document.getElementById("txt-date-label").textContent = t("dateLabel");
+  document.getElementById("txt-time-label").textContent = t("timeLabel");
+  document.getElementById("txt-inspector-label").textContent = t("inspectorLabel");
+  document.getElementById("f-inspector").placeholder = t("inspectorPlaceholder");
+  document.getElementById("txt-device-title").textContent = t("deviceTitle");
+  document.getElementById("txt-device-hint").textContent = t("deviceHint");
+  document.getElementById("txt-remark-title").textContent = t("remarkTitle");
+  document.getElementById("f-remark").placeholder = t("remarkPlaceholder");
+  document.getElementById("txt-submit-btn").textContent = t("submitBtn");
+  document.getElementById("txt-ai-title").textContent = t("aiTitle");
+  document.getElementById("ai-status").textContent = t("aiStatus");
+  document.getElementById("txt-ai-result-label").textContent = t("aiResultLabel");
+  document.getElementById("txt-ai-correct-hint").textContent = t("aiCorrectHint");
+  document.getElementById("txt-btn-camera").textContent = t("btnCamera");
+  document.getElementById("txt-btn-gallery").textContent = t("btnGallery");
+  document.getElementById("ai-confirm-btn").textContent = t("btnConfirm");
+  document.getElementById("txt-btn-cancel").textContent = t("btnCancel");
 }
 
 function updateAutoTime() {
-  const now = new Date();
-  const hh = String(now.getHours()).padStart(2,'0');
-  const mm = String(now.getMinutes()).padStart(2,'0');
-  const ss = String(now.getSeconds()).padStart(2,'0');
-  const timeStr = hh + ':' + mm + ':' + ss;
-  document.getElementById('f-timeslot').value = timeStr;
-  document.getElementById('auto-time-display').textContent = '🕐 ' + timeStr;
+  var now = new Date();
+  var hh = String(now.getHours()).padStart(2,"0");
+  var mm = String(now.getMinutes()).padStart(2,"0");
+  var ss = String(now.getSeconds()).padStart(2,"0");
+  var timeStr = hh + ":" + mm + ":" + ss;
+  document.getElementById("f-timeslot").value = timeStr;
+  document.getElementById("auto-time-display").textContent = "🕐 " + timeStr;
 }
-// 每秒更新時間
-setInterval(updateAutoTime, 1000);
+
+function initForm() {
+  var today = new Date();
+  var yyyy = today.getFullYear();
+  var mm = String(today.getMonth()+1).padStart(2,"0");
+  var dd = String(today.getDate()).padStart(2,"0");
+  document.getElementById("f-date").value = yyyy+"-"+mm+"-"+dd;
+
+  updateAutoTime();
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(updateAutoTime, 1000);
+
+  var list = document.getElementById("device-list");
+  list.innerHTML = "";
+  DEVICES.forEach(function(d) {
+    var typeLabel = t(d.typeKey);
+    var rangeLabel = d.typeKey === "fridge" ? t("fridgeRange") : t("freezerRange");
+    var nameLabel = typeLabel + " " + d.num;
+    list.innerHTML += '<div class="device-item" id="item-'+d.id+'">' +
+      '<div class="device-icon">'+d.icon+'</div>' +
+      '<div class="device-info">' +
+        '<div class="device-name">'+nameLabel+'</div>' +
+        '<div class="device-type">'+typeLabel+'｜'+rangeLabel+'</div>' +
+        '<button class="photo-btn" onclick="openOverlay(\''+d.id+'\')">'+t("photoBtn")+'</button>' +
+      '</div>' +
+      '<div class="device-right">' +
+        '<div class="temp-row">' +
+          '<input type="number" id="temp-'+d.id+'" placeholder="--" step="0.1" oninput="activateDevice(\''+d.id+'\')">' +
+          '<span>°C</span>' +
+        '</div>' +
+        '<img class="thumb-img" id="thumb-'+d.id+'">' +
+      '</div>' +
+    '</div>';
+  });
+}
 
 function activateDevice(id) {
-  document.getElementById('item-'+id).classList.add('selected');
+  document.getElementById("item-"+id).classList.add("selected");
 }
 
 function openOverlay(deviceId) {
-  document.getElementById('ai-target').value = deviceId;
-  document.getElementById('ai-preview').style.display = 'none';
-  document.getElementById('ai-result-box').style.display = 'none';
-  document.getElementById('ai-confirm-btn').style.display = 'none';
-  document.getElementById('ai-status').textContent = t('aiStatus');
-  document.getElementById('ai-overlay').style.display = 'flex';
+  document.getElementById("ai-target").value = deviceId;
+  document.getElementById("ai-preview").style.display = "none";
+  document.getElementById("ai-result-box").style.display = "none";
+  document.getElementById("ai-confirm-btn").style.display = "none";
+  document.getElementById("ai-status").textContent = t("aiStatus");
+  document.getElementById("ai-overlay").style.display = "flex";
 }
 
 function closeOverlay() {
-  document.getElementById('ai-overlay').style.display = 'none';
+  document.getElementById("ai-overlay").style.display = "none";
 }
 
-async function handlePhoto(e) {
-  const file = e.target.files[0];
+function handlePhoto(e) {
+  var file = e.target.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = async (ev) => {
-    const base64 = ev.target.result;
-    const preview = document.getElementById('ai-preview');
-    preview.src = base64; preview.style.display = 'block';
-    document.getElementById('ai-status').innerHTML = `<span class="spinner"></span>${t('aiRecognizing')}`;
-    document.getElementById('ai-result-box').style.display = 'none';
-    document.getElementById('ai-confirm-btn').style.display = 'none';
-    try {
-      const pureBase64 = base64.split(',')[1];
-      const mediaType  = file.type || 'image/jpeg';
-      const resp = await fetch('https://api.anthropic.com/v1/messages', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          model:'claude-sonnet-4-6', max_tokens:200,
-          messages:[{ role:'user', content:[
-            { type:'image', source:{ type:'base64', media_type:mediaType, data:pureBase64 } },
-            { type:'text', text:'This image shows a thermometer. Reply ONLY with the numeric temperature value (e.g. -18.5 or 5.2). No units, no text. If unreadable, reply: unreadable' }
-          ]}]
-        })
-      });
-      const data = await resp.json();
-      const raw  = data.content?.[0]?.text?.trim() ?? 'unreadable';
-      if (raw === 'unreadable' || isNaN(parseFloat(raw))) {
-        document.getElementById('ai-status').textContent = t('aiFail');
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var base64 = ev.target.result;
+    var preview = document.getElementById("ai-preview");
+    preview.src = base64;
+    preview.style.display = "block";
+    document.getElementById("ai-status").innerHTML = '<span class="spinner"></span>' + t("aiRecognizing");
+    document.getElementById("ai-result-box").style.display = "none";
+    document.getElementById("ai-confirm-btn").style.display = "none";
+
+    var pureBase64 = base64.split(",")[1];
+    var mediaType = file.type || "image/jpeg";
+
+    fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 200,
+        messages: [{
+          role: "user",
+          content: [
+            {type:"image", source:{type:"base64", media_type:mediaType, data:pureBase64}},
+            {type:"text", text:"This image shows a thermometer. Reply ONLY with the numeric temperature value (e.g. -18.5 or 5.2). No units, no text. If unreadable, reply: unreadable"}
+          ]
+        }]
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var raw = (data.content && data.content[0] && data.content[0].text) ? data.content[0].text.trim() : "unreadable";
+      if (raw === "unreadable" || isNaN(parseFloat(raw))) {
+        document.getElementById("ai-status").textContent = t("aiFail");
       } else {
-        const temp = parseFloat(raw);
-        document.getElementById('ai-temp-display').textContent = temp + '°C';
-        document.getElementById('ai-temp-input').value = temp;
-        document.getElementById('ai-result-box').style.display = 'block';
-        document.getElementById('ai-confirm-btn').style.display = 'inline-block';
-        document.getElementById('ai-status').textContent = t('aiDone');
-        photoData[document.getElementById('ai-target').value] = base64;
+        var temp = parseFloat(raw);
+        document.getElementById("ai-temp-display").textContent = temp + "°C";
+        document.getElementById("ai-temp-input").value = temp;
+        document.getElementById("ai-result-box").style.display = "block";
+        document.getElementById("ai-confirm-btn").style.display = "inline-block";
+        document.getElementById("ai-status").textContent = t("aiDone");
+        photoData[document.getElementById("ai-target").value] = base64;
       }
-    } catch(err) {
-      document.getElementById('ai-status').textContent = t('aiFail');
-    }
+    })
+    .catch(function() {
+      document.getElementById("ai-status").textContent = t("aiFail");
+    });
   };
   reader.readAsDataURL(file);
-  e.target.value = '';
+  e.target.value = "";
 }
 
 function confirmTemp() {
-  const devId = document.getElementById('ai-target').value;
-  const temp  = parseFloat(document.getElementById('ai-temp-input').value);
-  if (isNaN(temp)) { alert(t('alertValidTemp')); return; }
-  document.getElementById('temp-'+devId).value = temp;
+  var devId = document.getElementById("ai-target").value;
+  var temp = parseFloat(document.getElementById("ai-temp-input").value);
+  if (isNaN(temp)) { alert(t("alertValidTemp")); return; }
+  document.getElementById("temp-"+devId).value = temp;
   activateDevice(devId);
   if (photoData[devId]) {
-    const thumb = document.getElementById('thumb-'+devId);
-    thumb.src = photoData[devId]; thumb.style.display = 'block';
+    var thumb = document.getElementById("thumb-"+devId);
+    thumb.src = photoData[devId];
+    thumb.style.display = "block";
   }
   closeOverlay();
 }
 
 function submitForm() {
-  const date      = document.getElementById('f-date').value;
-  const timeslot  = document.getElementById('f-timeslot').value;
-  const inspector = document.getElementById('f-inspector').value.trim();
-  const remark    = document.getElementById('f-remark').value.trim();
-  if (!date)      { alert(t('alertDate')); return; }
-  if (!inspector) { alert(t('alertInspector')); return; }
+  var date = document.getElementById("f-date").value;
+  var timeslot = document.getElementById("f-timeslot").value;
+  var inspector = document.getElementById("f-inspector").value.trim();
+  var remark = document.getElementById("f-remark").value.trim();
+  if (!date) { alert(t("alertDate")); return; }
+  if (!inspector) { alert(t("alertInspector")); return; }
 
-  const records = [];
-  DEVICES_DEF.forEach((d, i) => {
-    const val = document.getElementById('temp-'+d.id).value;
-    const num = i < 2 ? (i+1) : (i-1);
-    if (val !== '') {
-      const temp = parseFloat(val);
-      records.push({ ...d, temp, name:`${t(d.typeKey)} ${num}`,
-        abnormal: d.typeKey==='fridge' ? temp>7 : temp>-18,
-        thresholdLabel: d.typeKey==='fridge' ? t('fridgeThreshold') : t('freezerThreshold'),
-        typeLabel: t(d.typeKey) });
+  var records = [];
+  DEVICES.forEach(function(d, i) {
+    var val = document.getElementById("temp-"+d.id).value;
+    if (val !== "") {
+      var temp = parseFloat(val);
+      var num = i < 2 ? (i+1) : (i-1);
+      records.push({
+        id: d.id,
+        name: t(d.typeKey) + " " + d.num,
+        typeKey: d.typeKey,
+        icon: d.icon,
+        temp: temp,
+        max: d.max,
+        abnormal: d.typeKey === "fridge" ? temp > 7 : temp > -18,
+        thresholdLabel: d.typeKey === "fridge" ? t("fridgeThreshold") : t("freezerThreshold"),
+        typeLabel: t(d.typeKey)
+      });
     }
   });
-  if (records.length === 0) { alert(t('alertTemp')); return; }
 
-  const slotLabel = timeslot === 'morning' ? t('morning') : t('evening');
+  if (records.length === 0) { alert(t("alertTemp")); return; }
 
-  // 送出到 Google Sheets
-  submitToSheets(date, slotLabel, inspector, remark, records);
-  showResult(date, slotLabel, inspector, remark, records);
+  submitToSheets(date, timeslot, inspector, remark, records);
+  showResult(date, timeslot, inspector, remark, records);
 }
 
-function showResult(date, timeslot, inspector, remark, records) {
-  const hasAbnormal = records.some(r => r.abnormal);
-  const now = new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
-  let html = '';
-
-  html += hasAbnormal
-    ? `<div class="result-card abnormal"><div class="result-header"><span class="result-icon">⚠️</span><span class="result-title">${t('abnormalTitle')}</span></div><p style="font-size:14px;color:#922b21;">${t('abnormalMsg')}</p></div>`
-    : `<div class="result-card normal"><div class="result-header"><span class="result-icon">✅</span><span class="result-title">${t('normalTitle')}</span></div><p style="font-size:14px;color:#1e8449;">${t('normalMsg')}</p></div>`;
-
-  records.forEach(r => {
-    const thumbHtml = photoData[r.id] ? `<div class="result-row"><span class="result-label">${t('labelPhoto')}</span><span class="result-value"><img src="${photoData[r.id]}" style="height:56px;border-radius:6px;border:2px solid #ddd;"></span></div>` : '';
-    html += `
-      <div class="result-card ${r.abnormal?'abnormal':'normal'}">
-        <div class="result-header"><span class="result-icon">${r.icon}</span><span class="result-title">${r.name}　${r.abnormal?t('statusAbnormal'):t('statusNormal')}</span></div>
-        <div class="result-detail">
-          <div class="result-row"><span class="result-label">${t('labelTemp')}</span><span class="result-value ${r.abnormal?'bad':''}">${r.temp}°C</span></div>
-          <div class="result-row"><span class="result-label">${t('labelType')}</span><span class="result-value">${r.typeLabel}</span></div>
-          <div class="result-row"><span class="result-label">${t('labelThreshold')}</span><span class="result-value">${r.thresholdLabel}</span></div>
-          ${thumbHtml}
-        </div>
-        ${r.abnormal?`<div class="alert-box">${t('alertText')}</div>`:''}
-      </div>`;
-  });
-
-  const unit = t('unitTai');
-  html += `
-    <div class="card" style="margin:0 0 14px;">
-      <h2>${t('summaryTitle')}</h2>
-      <div class="result-detail">
-        <div class="result-row"><span class="result-label">${t('labelDate')}</span><span class="result-value">${date}</span></div>
-        <div class="result-row"><span class="result-label">${t('labelSlot')}</span><span class="result-value">${timeslot}</span></div>
-        <div class="result-row"><span class="result-label">${t('labelInspector')}</span><span class="result-value">${inspector}</span></div>
-        <div class="result-row"><span class="result-label">${t('labelCount')}</span><span class="result-value">${records.length} ${unit}</span></div>
-        <div class="result-row"><span class="result-label">${t('labelAbnCount')}</span><span class="result-value ${hasAbnormal?'bad':''}">${records.filter(r=>r.abnormal).length} ${unit}</span></div>
-        ${remark?`<div class="result-row"><span class="result-label">${t('labelRemark')}</span><span class="result-value">${remark}</span></div>`:''}
-      </div>
-    </div>
-    <button class="again-btn" onclick="resetForm()">${t('againBtn')}</button>
-    <p class="timestamp">${date} ${now}</p>`;
-
-  document.getElementById('form-screen').style.display = 'none';
-  const rs = document.getElementById('result-screen');
-  rs.style.display = 'block'; rs.innerHTML = html;
-  window.scrollTo(0,0);
-}
-
-async function submitToSheets(date, timeslot, inspector, remark, records) {
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzj_Sht3PErdwKk5u7fV4erv3_73Ibi-Duh1NvZbpmInqE8AnENYkO5gy-DF1CYNOP3/exec";
+function submitToSheets(date, timeslot, inspector, remark, records) {
   try {
-    const payload = {
+    var payload = {
       date: date,
       timeslot: timeslot,
       inspector: inspector,
       remark: remark,
-      records: records.map(r => ({
-        name: r.name,
-        type: r.typeKey,
-        temp: r.temp
-      }))
+      records: records.map(function(r) {
+        return {name: r.name, type: r.typeKey, temp: r.temp};
+      })
     };
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {"Content-Type": "application/json"},
       body: JSON.stringify(payload)
     });
-    console.log('資料已送出到 Google Sheets');
   } catch(err) {
-    console.error('送出失敗：', err);
+    console.error("送出失敗：", err);
   }
 }
 
+function showResult(date, timeslot, inspector, remark, records) {
+  var hasAbnormal = records.some(function(r) { return r.abnormal; });
+  var now = new Date().toLocaleTimeString("zh-TW", {hour:"2-digit", minute:"2-digit"});
+  var html = "";
+
+  if (hasAbnormal) {
+    html += '<div class="result-card abnormal"><div class="result-header"><span class="result-icon">⚠️</span><span class="result-title">'+t("abnormalTitle")+'</span></div><p style="font-size:14px;color:#922b21;">'+t("abnormalMsg")+'</p></div>';
+  } else {
+    html += '<div class="result-card normal"><div class="result-header"><span class="result-icon">✅</span><span class="result-title">'+t("normalTitle")+'</span></div><p style="font-size:14px;color:#1e8449;">'+t("normalMsg")+'</p></div>';
+  }
+
+  records.forEach(function(r) {
+    var thumbHtml = photoData[r.id] ? '<div class="result-row"><span class="result-label">'+t("labelPhoto")+'</span><span class="result-value"><img src="'+photoData[r.id]+'" style="height:56px;border-radius:6px;border:2px solid #ddd;"></span></div>' : "";
+    html += '<div class="result-card '+(r.abnormal?"abnormal":"normal")+'">' +
+      '<div class="result-header"><span class="result-icon">'+r.icon+'</span><span class="result-title">'+r.name+'　'+(r.abnormal?t("statusAbnormal"):t("statusNormal"))+'</span></div>' +
+      '<div class="result-detail">' +
+        '<div class="result-row"><span class="result-label">'+t("labelTemp")+'</span><span class="result-value'+(r.abnormal?" bad":"")+'">'+r.temp+'°C</span></div>' +
+        '<div class="result-row"><span class="result-label">'+t("labelType")+'</span><span class="result-value">'+r.typeLabel+'</span></div>' +
+        '<div class="result-row"><span class="result-label">'+t("labelThreshold")+'</span><span class="result-value">'+r.thresholdLabel+'</span></div>' +
+        thumbHtml +
+      '</div>' +
+      (r.abnormal?'<div class="alert-box">'+t("alertText")+'</div>':"") +
+    '</div>';
+  });
+
+  var unit = t("unitTai");
+  html += '<div class="card" style="margin:0 0 14px;">' +
+    '<h2>'+t("summaryTitle")+'</h2>' +
+    '<div class="result-detail">' +
+      '<div class="result-row"><span class="result-label">'+t("labelDate")+'</span><span class="result-value">'+date+'</span></div>' +
+      '<div class="result-row"><span class="result-label">'+t("labelTime")+'</span><span class="result-value">'+timeslot+'</span></div>' +
+      '<div class="result-row"><span class="result-label">'+t("labelInspector")+'</span><span class="result-value">'+inspector+'</span></div>' +
+      '<div class="result-row"><span class="result-label">'+t("labelCount")+'</span><span class="result-value">'+records.length+' '+unit+'</span></div>' +
+      '<div class="result-row"><span class="result-label">'+t("labelAbnCount")+'</span><span class="result-value'+(hasAbnormal?" bad":"")+'">'+records.filter(function(r){return r.abnormal;}).length+' '+unit+'</span></div>' +
+      (remark?'<div class="result-row"><span class="result-label">'+t("labelRemark")+'</span><span class="result-value">'+remark+'</span></div>':"") +
+    '</div></div>' +
+    '<button class="again-btn" onclick="resetForm()">'+t("againBtn")+'</button>' +
+    '<p style="text-align:center;font-size:12px;color:#aaa;margin-top:8px;">'+date+' '+now+'</p>';
+
+  document.getElementById("form-screen").style.display = "none";
+  var rs = document.getElementById("result-screen");
+  rs.style.display = "block";
+  rs.innerHTML = html;
+  window.scrollTo(0,0);
+}
+
 function resetForm() {
-  DEVICES_DEF.forEach(d => {
-    document.getElementById('temp-'+d.id).value = '';
-    document.getElementById('item-'+d.id).classList.remove('selected');
-    const thumb = document.getElementById('thumb-'+d.id);
-    if (thumb) thumb.style.display = 'none';
+  DEVICES.forEach(function(d) {
+    document.getElementById("temp-"+d.id).value = "";
+    document.getElementById("item-"+d.id).classList.remove("selected");
+    var thumb = document.getElementById("thumb-"+d.id);
+    if (thumb) thumb.style.display = "none";
     delete photoData[d.id];
   });
-  document.getElementById('f-remark').value = '';
-  document.getElementById('result-screen').style.display = 'none';
-  document.getElementById('form-screen').style.display = 'block';
+  document.getElementById("f-remark").value = "";
+  document.getElementById("result-screen").style.display = "none";
+  document.getElementById("form-screen").style.display = "block";
   window.scrollTo(0,0);
 }
 </script>
