@@ -12,7 +12,8 @@
   #lang-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:24px; background:linear-gradient(160deg,#1a5276,#2980b9); }
   #lang-screen h1 { color:white; font-size:22px; text-align:center; margin-bottom:8px; }
   #lang-screen p  { color:rgba(255,255,255,0.8); font-size:14px; text-align:center; margin-bottom:32px; }
-  .lang-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; width:100%; max-width:360px; }
+  .lang-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; width:
+    timeLabel:'เวลา (อัตโนมัติ)',100%; max-width:360px; }
   .lang-btn { padding:18px 12px; background:white; border:none; border-radius:14px; cursor:pointer; text-align:center; box-shadow:0 4px 14px rgba(0,0,0,0.15); transition:transform 0.1s; }
   .lang-btn:active { transform:scale(0.97); }
   .lang-flag { font-size:30px; display:block; margin-bottom:6px; }
@@ -146,7 +147,7 @@
         <input type="date" id="f-date">
       </div>
       <div class="field">
-        <label id="txt-slot-label"></label>
+        <label id="txt-time-label"></label>
         <div class="time-btns">
           <button class="time-btn" id="btn-morning" onclick="selectTime(this,'morning')"></button>
           <button class="time-btn" id="btn-evening" onclick="selectTime(this,'evening')"></button>
@@ -210,9 +211,10 @@
 <script>
 // ── 多語言字典 ────────────────────────────────────────────
 const LANGS = {
-  zh: {
+  zh:
+    timeLabel:'巡檢時間（自動記錄）', {
     flag:'🇹🇼', title:'🌡️ 冷鏈溫度巡檢表', subtitle:'拍照後 AI 自動辨識溫度，填完即判斷異常',
-    basicInfo:'📋 基本資訊', dateLabel:'巡檢日期 *', slotLabel:'巡檢時段 *',
+    basicInfo:'📋 基本資訊', dateLabel:'巡檢日期 *', timeLabel:'巡檢時段 *',
     morning:'🌅 早班', evening:'🌙 晚班', inspectorLabel:'巡檢人員 *', inspectorPlaceholder:'請輸入姓名',
     deviceTitle:'🧊 各設備溫度記錄', deviceHint:'點「📷 拍照辨識」或直接手動輸入溫度',
     photoBtn:'📷 拍照辨識溫度', remarkTitle:'📝 備註', remarkPlaceholder:'如有異狀請記錄（選填）',
@@ -232,13 +234,14 @@ const LANGS = {
     againBtn:'🔄 再填一筆',
     fridgeRange:'正常範圍：≤ 7°C', freezerRange:'正常範圍：≤ -18°C',
     fridgeThreshold:'> 7°C', freezerThreshold:'> -18°C',
-    alertDate:'請選擇巡檢日期', alertSlot:'請選擇巡檢時段', alertInspector:'請輸入巡檢人員姓名',
+    alertDate:'請選擇巡檢日期', alertInspector:'請輸入巡檢人員姓名',
     alertTemp:'請至少填寫一台設備的溫度', alertValidTemp:'請輸入有效的溫度數值',
     fridge:'冷藏', freezer:'冷凍',
   },
-  en: {
+  en:
+    timeLabel:'Inspection Time (Auto)', {
     flag:'🇬🇧', title:'🌡️ Cold Chain Temperature Log', subtitle:'AI reads temperature from photo & checks for alerts',
-    basicInfo:'📋 Basic Information', dateLabel:'Inspection Date *', slotLabel:'Time Slot *',
+    basicInfo:'📋 Basic Information', dateLabel:'Inspection Date *', timeLabel:'Time Slot *',
     morning:'🌅 Morning', evening:'🌙 Evening', inspectorLabel:'Inspector *', inspectorPlaceholder:'Enter your name',
     deviceTitle:'🧊 Device Temperature Record', deviceHint:'Tap 📷 to scan or enter temperature manually',
     photoBtn:'📷 Scan Temperature', remarkTitle:'📝 Remarks', remarkPlaceholder:'Notes (optional)',
@@ -258,13 +261,14 @@ const LANGS = {
     againBtn:'🔄 New Entry',
     fridgeRange:'Normal: ≤ 7°C', freezerRange:'Normal: ≤ -18°C',
     fridgeThreshold:'> 7°C', freezerThreshold:'> -18°C',
-    alertDate:'Please select date', alertSlot:'Please select time slot', alertInspector:'Please enter inspector name',
+    alertDate:'Please select date', alertInspector:'Please enter inspector name',
     alertTemp:'Please enter temperature for at least one device', alertValidTemp:'Please enter a valid temperature',
     fridge:'Refrigerator', freezer:'Freezer',
   },
-  vi: {
+  vi:
+    timeLabel:'Thời Gian (Tự Động)', {
     flag:'🇻🇳', title:'🌡️ Bảng Kiểm Tra Nhiệt Độ', subtitle:'AI tự động nhận dạng nhiệt độ từ ảnh chụp',
-    basicInfo:'📋 Thông Tin Cơ Bản', dateLabel:'Ngày Kiểm Tra *', slotLabel:'Ca Làm Việc *',
+    basicInfo:'📋 Thông Tin Cơ Bản', dateLabel:'Ngày Kiểm Tra *', timeLabel:'Ca Làm Việc *',
     morning:'🌅 Ca Sáng', evening:'🌙 Ca Tối', inspectorLabel:'Người Kiểm Tra *', inspectorPlaceholder:'Nhập tên của bạn',
     deviceTitle:'🧊 Ghi Nhiệt Độ Thiết Bị', deviceHint:'Chụp ảnh 📷 hoặc nhập nhiệt độ thủ công',
     photoBtn:'📷 Chụp Ảnh Nhận Dạng', remarkTitle:'📝 Ghi Chú', remarkPlaceholder:'Ghi chú nếu có vấn đề (tùy chọn)',
@@ -284,13 +288,14 @@ const LANGS = {
     againBtn:'🔄 Nhập Lại',
     fridgeRange:'Bình thường: ≤ 7°C', freezerRange:'Bình thường: ≤ -18°C',
     fridgeThreshold:'> 7°C', freezerThreshold:'> -18°C',
-    alertDate:'Vui lòng chọn ngày', alertSlot:'Vui lòng chọn ca', alertInspector:'Vui lòng nhập tên người kiểm tra',
+    alertDate:'Vui lòng chọn ngày', alertInspector:'Vui lòng nhập tên người kiểm tra',
     alertTemp:'Vui lòng nhập nhiệt độ cho ít nhất một thiết bị', alertValidTemp:'Vui lòng nhập nhiệt độ hợp lệ',
     fridge:'Tủ Lạnh', freezer:'Tủ Đông',
   },
-  id: {
+  id:
+    timeLabel:'Waktu (Otomatis)', {
     flag:'🇮🇩', title:'🌡️ Formulir Suhu Rantai Dingin', subtitle:'AI membaca suhu dari foto secara otomatis',
-    basicInfo:'📋 Informasi Dasar', dateLabel:'Tanggal Inspeksi *', slotLabel:'Shift *',
+    basicInfo:'📋 Informasi Dasar', dateLabel:'Tanggal Inspeksi *', timeLabel:'Shift *',
     morning:'🌅 Shift Pagi', evening:'🌙 Shift Malam', inspectorLabel:'Petugas Inspeksi *', inspectorPlaceholder:'Masukkan nama Anda',
     deviceTitle:'🧊 Catatan Suhu Perangkat', deviceHint:'Foto 📷 atau masukkan suhu secara manual',
     photoBtn:'📷 Foto & Kenali Suhu', remarkTitle:'📝 Catatan', remarkPlaceholder:'Catatan jika ada masalah (opsional)',
@@ -310,13 +315,13 @@ const LANGS = {
     againBtn:'🔄 Entri Baru',
     fridgeRange:'Normal: ≤ 7°C', freezerRange:'Normal: ≤ -18°C',
     fridgeThreshold:'> 7°C', freezerThreshold:'> -18°C',
-    alertDate:'Pilih tanggal', alertSlot:'Pilih shift', alertInspector:'Masukkan nama petugas',
+    alertDate:'Pilih tanggal', alertInspector:'Masukkan nama petugas',
     alertTemp:'Masukkan suhu untuk minimal satu perangkat', alertValidTemp:'Masukkan suhu yang valid',
     fridge:'Lemari Pendingin', freezer:'Freezer',
   },
   th: {
     flag:'🇹🇭', title:'🌡️ แบบฟอร์มตรวจสอบอุณหภูมิ', subtitle:'AI อ่านอุณหภูมิจากรูปถ่ายโดยอัตโนมัติ',
-    basicInfo:'📋 ข้อมูลพื้นฐาน', dateLabel:'วันที่ตรวจสอบ *', slotLabel:'กะการทำงาน *',
+    basicInfo:'📋 ข้อมูลพื้นฐาน', dateLabel:'วันที่ตรวจสอบ *', timeLabel:'กะการทำงาน *',
     morning:'🌅 กะเช้า', evening:'🌙 กะเย็น', inspectorLabel:'ผู้ตรวจสอบ *', inspectorPlaceholder:'กรอกชื่อของคุณ',
     deviceTitle:'🧊 บันทึกอุณหภูมิอุปกรณ์', deviceHint:'ถ่ายรูป 📷 หรือกรอกอุณหภูมิด้วยตนเอง',
     photoBtn:'📷 ถ่ายรูปอ่านอุณหภูมิ', remarkTitle:'📝 หมายเหตุ', remarkPlaceholder:'บันทึกหากมีปัญหา (ไม่บังคับ)',
@@ -336,7 +341,7 @@ const LANGS = {
     againBtn:'🔄 บันทึกใหม่',
     fridgeRange:'ปกติ: ≤ 7°C', freezerRange:'ปกติ: ≤ -18°C',
     fridgeThreshold:'> 7°C', freezerThreshold:'> -18°C',
-    alertDate:'กรุณาเลือกวันที่', alertSlot:'กรุณาเลือกกะ', alertInspector:'กรุณากรอกชื่อผู้ตรวจ',
+    alertDate:'กรุณาเลือกวันที่', alertInspector:'กรุณากรอกชื่อผู้ตรวจ',
     alertTemp:'กรุณากรอกอุณหภูมิอย่างน้อย 1 เครื่อง', alertValidTemp:'กรุณากรอกอุณหภูมิที่ถูกต้อง',
     fridge:'ตู้เย็น', freezer:'ตู้แช่แข็ง',
   }
@@ -373,9 +378,8 @@ function applyLang() {
   document.getElementById('txt-subtitle').textContent = L.subtitle;
   document.getElementById('txt-basic-info').textContent = L.basicInfo;
   document.getElementById('txt-date-label').textContent = L.dateLabel;
-  document.getElementById('txt-slot-label').textContent = L.slotLabel;
-  document.getElementById('btn-morning').textContent = L.morning;
-  document.getElementById('btn-evening').textContent = L.evening;
+  document.getElementById('txt-time-label').textContent = L.slotLabel;
+  document.getElementById('txt-time-label').textContent = L.timeLabel;
   document.getElementById('txt-inspector-label').textContent = L.inspectorLabel;
   document.getElementById('f-inspector').placeholder = L.inspectorPlaceholder;
   document.getElementById('txt-device-title').textContent = L.deviceTitle;
@@ -399,9 +403,7 @@ function initForm() {
   const mm   = String(today.getMonth()+1).padStart(2,'0');
   const dd   = String(today.getDate()).padStart(2,'0');
   document.getElementById('f-date').value = `${yyyy}-${mm}-${dd}`;
-  document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('f-timeslot').value = '';
-  document.querySelectorAll('.time-btn')[today.getHours() < 14 ? 0 : 1].click();
+  updateAutoTime();
 
   const list = document.getElementById('device-list');
   list.innerHTML = '';
@@ -429,11 +431,17 @@ function initForm() {
   });
 }
 
-function selectTime(btn, val) {
-  document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('f-timeslot').value = val;
+function updateAutoTime() {
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  const ss = String(now.getSeconds()).padStart(2,'0');
+  const timeStr = hh + ':' + mm + ':' + ss;
+  document.getElementById('f-timeslot').value = timeStr;
+  document.getElementById('auto-time-display').textContent = '🕐 ' + timeStr;
 }
+// 每秒更新時間
+setInterval(updateAutoTime, 1000);
 
 function activateDevice(id) {
   document.getElementById('item-'+id).classList.add('selected');
@@ -516,7 +524,6 @@ function submitForm() {
   const inspector = document.getElementById('f-inspector').value.trim();
   const remark    = document.getElementById('f-remark').value.trim();
   if (!date)      { alert(t('alertDate')); return; }
-  if (!timeslot)  { alert(t('alertSlot')); return; }
   if (!inspector) { alert(t('alertInspector')); return; }
 
   const records = [];
